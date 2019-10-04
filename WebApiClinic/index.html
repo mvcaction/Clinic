@@ -50,6 +50,9 @@
     <div dir="ltr" align="center">
         <fieldset style="width: 400px">
             <legend>روش ویرایش</legend>
+
+            
+
             <input type="radio" name="rdEditApproach" checked="checked" onclick="popupEdit()" />Popup
             <input type="radio" name="rdEditApproach" onclick="inlineEdit()" />Inline
         </fieldset>
@@ -140,6 +143,10 @@
                 ]
             });
 
+         $("#btnSearch").kendoButton({
+    click:onSearch
+  })
+
             $("#report-grid").kendoGrid({
                 dataSource: productsDataSource,
                 autoBind: true,
@@ -173,7 +180,7 @@
                 columns: [
                     { field: "Id", title: "کد", width: "130px" },
                     {
-                        field: "Name", title: "نام ",
+                        field: "Name", title: "نام ", 
                     },
                      {
                         field: "Family", title: "نام خانوادگی",
@@ -182,6 +189,7 @@
 
                     {
                         field: "Phone", title: "تلفن",
+                         hidden: true,
                         //format: "{0:c0}",
                     },
                     {
@@ -194,10 +202,12 @@
                     },
                     {
                         field: "Address", title: "آدرس",
+                         hidden: true,
                         //format: "{0:c0}",
                     },
                     {
                         field: "Email", title: "ایمبل",
+                        hidden: true,
                         //format: "{0:c0}",
                     },
                     {
@@ -228,6 +238,15 @@
                     { name: "create", text: "افزودن رديف جديد" },
                     { name: "save", text: "ذخيره‌ي تمامي تغييرات" },
                     { name: "cancel", text: "لغو كليه‌ي تغييرات" },
+                    
+                          
+                            {
+                                template: "<input id='txtSearchString' style='width: 150px;' />",
+                                overflow: "never"
+                    },
+                    { template: "<button id='btnSearch' onclick='onSearch()'  >جسنجو</button>"},
+                           
+                   
                 ],
                 messages: {
                     editable: {
@@ -247,9 +266,26 @@
                 }
             });
         });
+    
     </script>
 
     <script type="text/javascript">
+        function onSearch()
+{
+  var q = $("#txtSearchString").val();
+      var grid = $("#report-grid").data("kendoGrid");
+      grid.dataSource.query({
+        page:1,
+        pageSize:20,
+        filter:{
+          logic:"or",
+          filters:[
+            {field:"Family", operator:"contains",value:q},
+         
+            ]
+         }
+      });
+}
         // اين اطلاعات براي تهيه خروجي سمت سرور مناسب هستند
         function getCurrentGridFilters() {
             var dataSource = $("#report-grid").data("kendoGrid").dataSource;
@@ -261,7 +297,8 @@
                 filter: dataSource.filter()
             };
             return kendo.stringify(gridState);
-        }
+            }
+
     </script>
 
 
